@@ -1,13 +1,14 @@
 .saga-step-template-container-expansion {
   margin-bottom: 0px !important;
-  
+
   &:not(.mat-expanded) {
     margin-bottom: 10px !important;
   }
   box-shadow: 0 0 0 !important;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 
-  .mat-expansion-panel-header, .mat-expansion-panel-header.mat-expanded {
+  .mat-expansion-panel-header,
+  .mat-expansion-panel-header.mat-expanded {
     padding-right: 0px;
     color: white;
     .saga-tep-template-container-expantion-title {
@@ -65,4 +66,38 @@
 
 .saga-step-template-container-expansion-content {
   margin-top: 10px;
+  border: none;
+  min-height: 60px;
+}
+
+.cdk-drag-preview {
+  box-sizing: none;
+  border: none;
+}
+
+.cdk-drag-placeholder {
+  opacity: 1;
+  background-color: black;
+  z-index: 1000;
+  & > div:first-of-type {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border: 2px dotted black;
+    float: left;
+    position: absolute;
+  }
+}
+
+.saga-dragging-mark {
+  position: relative;
+}
+
+.cdk-drag-animating {
+  transition: transform 500ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.saga-step-template-container-expansion-content.cdk-drop-list-dragging
+  .saga-dragging-mark:not(.cdk-drag-placeholder) {
+  transition: transform 500ms cubic-bezier(0, 0, 0.2, 1);
 }

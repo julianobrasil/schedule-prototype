@@ -1,11 +1,15 @@
-import { Component, Input, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
-import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Input, ViewEncapsulation, ViewChild } from '@angular/core';
 
-import { MatDialog, MatExpansionPanel } from '@angular/material';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDropList } from '@angular/cdk/drag-drop';
+
+import { MatDialog } from '@angular/material';
+
+import { Observable } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
 import { NewStepTemplateDialogComponent } from './new-step-template-dialog/new-step-template-dialog.component';
 
-import { Status, Step, User } from './step-template.service';
+import { Status, Step, StepTemplateService } from './step-template.service';
 
 import * as moment from 'moment';
 type Moment = moment.Moment;
@@ -48,10 +52,18 @@ export class StepTemplateComponent {
   @Input()
   minDate: Moment;
 
+  @ViewChild('cdkSagaDragAndDropList') _cdkSagaDragAndDropList: CdkDropList;
+
+  _connectedToList$: Observable<CdkDropList[]> = this._stepService.dropLists$.pipe(delay(0));
+
   /** status possíveis */
   _possibleStatuses = Status;
 
-  constructor(private _dialog: MatDialog) {
+  constructor(private _dialog: MatDialog, public _stepService: StepTemplateService) {
+  }
+
+  ngAfterViewInit() {
+    this._stepService.addToCdkList(this.step, this._cdkSagaDragAndDropList);
   }
 
   /** adiciona uma etapa filha */
@@ -98,6 +110,22 @@ export class StepTemplateComponent {
     }
 
     this._updateStatus();
+  }
+
+  /** trata o evento de arrastar e soltar */
+  drop(event: CdkDragDrop<Step[]>) {
+    if (event.previousContainer === event.container) {
+      this._stepService.removeFromList(event.container.data[event.previousIndex]);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      this._stepService.removeFromList(event.previousContainer.data[event.previousIndex]);
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+    }
+
+
   }
 
   /** obtém as classes para estilizar o expansion */
@@ -156,7 +184,6 @@ export class StepTemplateComponent {
   }
 
   _buildTooltip(step: Step) {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
 
     const startDate = step.startDate ? moment.utc(step.startDate).format('dd/MM/yyyy') : "-";
 

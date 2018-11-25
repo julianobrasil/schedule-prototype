@@ -57,6 +57,7 @@ import {
 import {LayoutModule} from '@angular/cdk/layout';
 import {PortalModule} from '@angular/cdk/portal';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   exports: [
@@ -94,6 +95,7 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
     MatSnackBarModule,
 
     /** @angular/cdk */
+    DragDropModule,
     LayoutModule,
     PortalModule,
     ScrollingModule,

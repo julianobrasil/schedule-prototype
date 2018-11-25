@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
 
+import { CdkDropList } from '@angular/cdk/drag-drop';
+
+import { BehaviorSubject } from 'rxjs';
+
 import * as moment from 'moment';
 type Moment = moment.Moment;
 
@@ -29,6 +33,12 @@ export interface Step {
 })
 export class StepTemplateService {
 
+  private _list: CdkDropList[] = [];
+
+  private _cdkPerStep = {};
+
+  dropLists$: BehaviorSubject<CdkDropList[]> = new BehaviorSubject<CdkDropList[]>(this._list);
+
   minMinDate(minRootDate: Moment): Moment {
     return minRootDate ? moment.utc(minRootDate) : null;
   }
@@ -55,6 +65,54 @@ export class StepTemplateService {
     }
 
     return minRootDate;
+  }
+
+  addToCdkList(step: Step, dropList: CdkDropList) {
+    if (this._list.some((cdkList: CdkDropList) => cdkList === dropList)) {
+      return;
+    }
+
+    const key: string = this._sortString(JSON.stringify(step));
+    if (!this._cdkPerStep[key]) {
+      this._cdkPerStep[key] = dropList;
+      this._list.push(dropList);
+    }
+
+    this.dropLists$.next([...this._list]);
+
+    console.log(this._list.length);
+  }
+
+  removeFromList(step: Step) {
+    const key: string = this._sortString(JSON.stringify(step));
+
+    if(!this._cdkPerStep[key]) {
+      return;
+    }
+
+    const index = this._list.findIndex((cdkList: CdkDropList) => cdkList === this._cdkPerStep[key]);
+
+    if (index < 0) {
+      return;
+    }
+
+    this._list.splice(index, 1);
+
+    this.dropLists$.next([...this._list]);
+  }
+
+  /**
+   * Ordena uma string
+   *
+   * @private
+   * @param {string} str
+   * @returns {string}
+   * @memberof StepTemplateService
+   */
+  private _sortString(str: string): string {
+    const strSplitted = str.split('').sort((a, b) => a.localeCompare(b, 'pt-br'));
+
+    return strSplitted.reduce((acc, a) => acc = acc + a, '');
   }
 
   private _lookForMinimumStartDate(step: Step, includeInitialStep = true) {
