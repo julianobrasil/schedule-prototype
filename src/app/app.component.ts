@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 
 import { Step, User, Status } from './step-template/step-template.service';
 
+import * as moment from 'moment';
+type Moment = moment.Moment;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -23,7 +26,7 @@ export class AppComponent {
     }
   }
 
-  today: Date = new Date();
+  today: Moment = moment.utc();
 
   parentStep: Step =
     {
@@ -123,10 +126,10 @@ export class AppComponent {
     };
 
 
-  buildNewDate(date: Date, days: number): Date {
-    const newDate = new Date(date);
+  buildNewDate(date: Moment, days: number): Moment {
+    const newDate = moment.utc(date);
 
-    newDate.setDate(newDate.getDate() + days);
+    newDate.add(days, 'days');
 
     return newDate;
   }

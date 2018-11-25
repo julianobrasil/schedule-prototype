@@ -11,6 +11,9 @@ import { takeUntil } from 'rxjs/operators';
 
 import { Step, StepTemplateService } from '../step-template.service';
 
+import * as moment from 'moment';
+type Moment = moment.Moment;
+
 @Component({
   selector: 'app-new-step-template-dialog',
   templateUrl: 'new-step-template-dialog.component.html',
@@ -79,19 +82,19 @@ export class NewStepTemplateDialogComponent implements OnDestroy {
     }
   }
 
-  get _maxMinDate(): Date {
+  get _maxMinDate(): Moment {
     return this._componentService.maxMinDate(this.data.step, this.data.maxDate);
   }
 
-  get _minMinDate(): Date {
+  get _minMinDate(): Moment {
     return this._componentService.minMinDate(this.data.minDate);
   }
 
-  get _minMaxDate(): Date {
+  get _minMaxDate(): Moment {
     return this._componentService.minMaxDate(this.data.step, this.data.minDate);
   }
 
-  get _maxMaxDate(): Date {
+  get _maxMaxDate(): Moment {
     return this._componentService.maxMaxDate(this.data.maxDate);
   }
 }

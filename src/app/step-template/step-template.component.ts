@@ -7,6 +7,8 @@ import { NewStepTemplateDialogComponent } from './new-step-template-dialog/new-s
 
 import { Status, Step, User } from './step-template.service';
 
+import * as moment from 'moment';
+type Moment = moment.Moment;
 
 @Component({
   selector: 'app-step-template',
@@ -41,10 +43,10 @@ export class StepTemplateComponent {
   isRootStep = true;
 
   @Input()
-  maxDate: Date;
+  maxDate: Moment;
 
   @Input()
-  minDate: Date;
+  minDate: Moment;
 
   /** status possíveis */
   _possibleStatuses = Status;
@@ -60,7 +62,7 @@ export class StepTemplateComponent {
 
     const dialogRef = this._dialog.open(NewStepTemplateDialogComponent, { data: { isRootStep: this.isRootStep, minDate: this.minDate, maxDate: this.maxDate, } });
 
-    dialogRef.afterClosed().subscribe((value: { name: string, startDate: Date; endDate: Date } | null) => {
+    dialogRef.afterClosed().subscribe((value: { name: string, startDate: Moment; endDate: Moment } | null) => {
       if (value !== null) {
         step.steps.push({ ...value, steps: [] });
       }
@@ -137,17 +139,17 @@ export class StepTemplateComponent {
       return;
     }
 
-    if (this.step.endDate && this.step.endDate.getTime() <= new Date().getTime()) {
+    if (this.step.endDate && !this.step.endDate.isAfter(moment.utc())) {
       this.step.status = Status.OVERDUE;
       return;
     }
 
-    if (this.step.startDate && this.step.startDate.getTime() <= new Date().getTime() && this.step.endDate && this.step.endDate.getTime() > new Date().getTime()) {
+    if (this.step.startDate && !this.step.startDate.isAfter(moment.utc()) && this.step.endDate && this.step.endDate.isAfter(moment.utc())) {
       this.step.status = Status.IN_PROGRESS;
       return;
     }
 
-    if (!this.step.startDate || this.step.startDate && this.step.startDate.getTime() > new Date().getTime()) {
+    if (!this.step.startDate || this.step.startDate && this.step.startDate.isAfter(moment.utc())) {
       this.step.status = Status.NOT_STARTED;
       return;
     }
@@ -156,9 +158,9 @@ export class StepTemplateComponent {
   _buildTooltip(step: Step) {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
 
-    const startDate = step.startDate ? new Intl.DateTimeFormat('pt-BR', options).format(new Date(step.startDate)) : "-";
+    const startDate = step.startDate ? moment.utc(step.startDate).format('dd/MM/yyyy') : "-";
 
-    const endDate = step.endDate ? new Intl.DateTimeFormat('pt-BR', options).format(new Date(step.endDate)) : "-";
+    const endDate = step.endDate ? moment.utc(step.endDate).format('dd/MM/yyyy') : "-";
 
     if (startDate === '-' && endDate === '-') {
       return 'Período não configurado';

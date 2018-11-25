@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 
+import * as moment from 'moment';
+type Moment = moment.Moment;
+
 export enum Status {
   IN_PROGRESS = 'IN_PROGRESS',
   NOT_STARTED = 'NOT_STARTED',
@@ -14,8 +17,8 @@ export interface User {
 
 export interface Step {
   name: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: Moment;
+  endDate?: Moment;
   steps: Step[];
   status?: Status,
   assigned?: User[];
@@ -26,28 +29,28 @@ export interface Step {
 })
 export class StepTemplateService {
 
-  minMinDate(minRootDate: Date): Date {
-    return minRootDate ? new Date(minRootDate) : null;
+  minMinDate(minRootDate: Moment): Moment {
+    return minRootDate ? moment.utc(minRootDate) : null;
   }
 
-  maxMaxDate(maxRootDate: Date): Date {
-    return maxRootDate ? new Date(maxRootDate) : null;
+  maxMaxDate(maxRootDate: Moment): Moment {
+    return maxRootDate ? moment.utc(maxRootDate) : null;
   }
 
-  maxMinDate(step: Step, maxRootDate: Date): Date {
-    const minStepStartDate: Date = this._lookForMinimumStartDate(step, false);
+  maxMinDate(step: Step, maxRootDate: Moment): Moment {
+    const minStepStartDate: Moment = this._lookForMinimumStartDate(step, false);
 
-    if((minStepStartDate && !maxRootDate) || (minStepStartDate && maxRootDate && minStepStartDate.getTime() < maxRootDate.getTime())) {
+    if ((minStepStartDate && !maxRootDate) || (minStepStartDate && maxRootDate && minStepStartDate.isBefore(maxRootDate))) {
       return minStepStartDate
     }
 
     return maxRootDate;
   }
 
-  minMaxDate(step: Step, minRootDate: Date): Date {
-    const maxStepStartDate: Date = this._lookForMaximumStartDate(step, false);
+  minMaxDate(step: Step, minRootDate: Moment): Moment {
+    const maxStepStartDate: Moment = this._lookForMaximumStartDate(step, false);
 
-    if((maxStepStartDate && !minRootDate) || (maxStepStartDate && minRootDate && maxStepStartDate.getTime() > minRootDate.getTime())) {
+    if ((maxStepStartDate && !minRootDate) || (maxStepStartDate && minRootDate && maxStepStartDate.isAfter(minRootDate))) {
       return maxStepStartDate
     }
 
@@ -59,9 +62,9 @@ export class StepTemplateService {
       return null;
     }
 
-    let minDate: Date = null;
+    let minDate: Moment = null;
     if (includeInitialStep) {
-      minDate = step.startDate ? new Date(step.startDate) : null;
+      minDate = step.startDate ? moment.utc(step.startDate) : null;
     }
 
     if (!step.steps || !step.steps.length) {
@@ -71,7 +74,7 @@ export class StepTemplateService {
     for (const s of step.steps) {
       const date = this._lookForMinimumStartDate(s);
 
-      if ((date && !minDate) || (date && minDate && date.getTime() < minDate.getTime())) {
+      if ((date && !minDate) || (date && minDate && date.isBefore(minDate))) {
         minDate = date;
       }
     }
@@ -84,9 +87,9 @@ export class StepTemplateService {
       return null;
     }
 
-    let maxDate: Date = null;
+    let maxDate: Moment = null;
     if (includeInitialStep) {
-      maxDate = step.endDate ? new Date(step.endDate) : null;
+      maxDate = step.endDate ? moment.utc(step.endDate) : null;
     }
 
     if (!step.steps || !step.steps.length) {
@@ -96,7 +99,7 @@ export class StepTemplateService {
     for (const s of step.steps) {
       const date = this._lookForMaximumStartDate(s);
 
-      if ((date && !maxDate) || (date && maxDate && date.getTime() >= maxDate.getTime())) {
+      if ((date && !maxDate) || (date && maxDate && !date.isBefore(maxDate))) {
         maxDate = date;
       }
     }

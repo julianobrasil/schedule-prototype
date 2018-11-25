@@ -1,6 +1,6 @@
 import { Component, Input, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
 
-import {Step} from '../step-template.component';
+import {Step} from '../step-template.service';
 
 export interface StepToRemove {
   step: Step;

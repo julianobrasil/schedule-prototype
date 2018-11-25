@@ -7,10 +7,10 @@ import { StepTemplateComponent } from './step-template.component';
 import { StepTemplateMenuComponent } from './step-template-menu/step-template-menu.component';
 import { NewStepTemplateDialogComponent } from './new-step-template-dialog/new-step-template-dialog.component';
 
-import {DemoMaterialModule} from '../material-module';
+import {MaterialModule} from '../custom-material/material.module';
 
 @NgModule({
-  imports: [CommonModule,ReactiveFormsModule,DemoMaterialModule,],
+  imports: [CommonModule,ReactiveFormsModule,MaterialModule,],
   declarations: [StepTemplateComponent, NewStepTemplateDialogComponent, StepTemplateMenuComponent],
   exports:[StepTemplateComponent],
   entryComponents: [NewStepTemplateDialogComponent],
