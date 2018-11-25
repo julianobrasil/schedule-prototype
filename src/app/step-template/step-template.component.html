@@ -1,0 +1,39 @@
+<mat-expansion-panel [expanded]="!!step?.steps?.length" hideToggle="true" [disabled]="!step?.steps?.length" [ngClass]="_expansionClass"
+ #expansion="matExpansionPanel">
+	<mat-expansion-panel-header>
+		<div class="saga-tep-template-container-expantion-title">
+			<mat-icon *ngIf="step.status === _possibleStatuses.FINISHED" matTooltip="atividade concluída" matTooltipPosition="above">
+				check
+			</mat-icon>
+      <mat-icon *ngIf="step.status === _possibleStatuses.OVERDUE" matTooltip="atividade atrasada" matTooltipPosition="above">
+				error_outline
+			</mat-icon>
+      
+			<span [matTooltip]="_buildTooltip(step)" matTooltipPosition="above">{{step?.name}}&nbsp;</span>
+
+			<ng-container *ngIf="!!step?.steps?.length && expansion.expanded">(esconder)
+			</ng-container>
+			<ng-container *ngIf="!!step?.steps?.length && !expansion.expanded">
+				(mostrar mais)
+			</ng-container>
+		</div>
+		<div>
+			<app-step-template-menu 
+      (addChild)="_addChild($event)" 
+      (edit)="_edit($event)" 
+      (remove)="_remove(step, parentStep)" 
+      (markAsFinished)="_markAsFinished(step)"
+			[step]="step" 
+      [parentStep]="parentStep" 
+      [showAddChildButton]="showAddChildButton" 
+      [showRemoveButton]="showRemoveButton && !!parentStep"
+			[isRootStep]="isRootStep">
+			</app-step-template-menu>
+		</div>
+	</mat-expansion-panel-header>
+
+	<div class="saga-step-template-container-expansion-content">
+		<app-step-template *ngFor="let childStep of step?.steps" [step]="childStep" [parentStep]="step" [isRootStep]="false" [minDate]="isRootStep ? step.startDate : minDate" [maxDate]="isRootStep ? step.endDate : maxDate"></app-step-template>
+	</div>
+
+</mat-expansion-panel>

@@ -1,0 +1,33 @@
+<div matDialogTitle>
+	{{data && data.step ? 'Alteração' : 'Criação'}} de atividade
+</div>
+
+<div matDialogContent>
+	<form [formGroup]="_form" (keyup.enter)="_submitForm()" novalidate>
+		<mat-form-field appearance="standard" class="saga-full-width">
+			<mat-label>Nome da atividade</mat-label>
+			<input formControlName="name" matInput required>
+      </mat-form-field>
+      
+		<div [ngClass]="_datesClass">
+
+      <mat-form-field appearance="standard">
+        <mat-label>Início</mat-label>
+        <input (click)="startDate.open()" [min]="_minMinDate" [max]="_maxMinDate" [matDatepicker]="startDate" formControlName="startDate" matInput readonly>
+        <mat-datepicker #startDate [touchUi]="_verySmallScreen"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="standard">
+        <mat-label>Fim</mat-label>
+        <input (click)="endDate.open()" [min]="_minMaxDate" [max]="_maxMaxDate" [matDatepicker]="endDate" formControlName="endDate" matInput readonly>
+        <mat-datepicker #endDate [touchUi]="_verySmallScreen"></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </form>
+
+</div>
+
+<div matDialogActions>
+  <button [matDialogClose]="null" color="warn" mat-button>Fechar</button>
+  <button (click)="_submitForm()" color="primary" mat-button>{{data && data.step ? 'Gravar' : 'Criar'}}</button>
+</div>
