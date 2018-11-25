@@ -1,0 +1,21 @@
+.saga-dialog-form-container-dates {
+  display: flex;
+  flex-direction: row;
+  
+  mat-form-field:nth-child(2n) {
+    margin-left: 10px;
+  }
+}
+
+.saga-dialog-form-container-dates-small {
+  display: flex;
+  flex-direction: column;
+  
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.saga-full-width {
+  width: 100%;
+}

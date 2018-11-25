@@ -1,0 +1,43 @@
+<ng-container *ngIf="!isRootStep">
+	<button class="saga-step-icon-button" mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button *ngIf="showAddChildButton" (click)="edit.emit(step)" mat-menu-item>
+      <mat-icon>create</mat-icon>
+      <span>Alterar atividade</span>
+    </button>
+    <button *ngIf="showAddChildButton" (click)="addChild.emit(step)" mat-menu-item>
+      <mat-icon>add_box</mat-icon>
+      <span>Adicionar subatividade</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button *ngIf="showRemoveButton" (click)="markAsFinished.emit(step)" mat-menu-item>
+      <mat-icon>check</mat-icon>
+      <span>Concluir</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button *ngIf="showRemoveButton" (click)="remove.emit({step: step,parentStep: parentStep})" mat-menu-item>
+      <mat-icon>delete_forever</mat-icon>
+      <span>Apagar</span>
+    </button>
+    
+  </mat-menu>
+</ng-container>
+
+<ng-container *ngIf="isRootStep">
+  <button class="saga-step-icon-button" mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button *ngIf="showAddChildButton" (click)="edit.emit(step)" mat-menu-item>
+      <mat-icon>add_box</mat-icon>
+      <span>Alterar atividade</span>
+    </button>
+
+    <button *ngIf="showAddChildButton" (click)="addChild.emit(step)" mat-menu-item>
+      <mat-icon>add_box</mat-icon>
+      <span>Adicionar subatividade</span>
+    </button>          
+  </mat-menu>
+</ng-container>
